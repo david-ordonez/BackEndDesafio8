@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 class FileManager {
     static async saveFile(fileName, content){
@@ -25,4 +25,4 @@ class FileManager {
     }
 }
 
-module.exports = FileManager;
+export default FileManager;

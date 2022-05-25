@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "productossocket",
   "version": "1.0.0",
   "description": "",
@@ -14,6 +15,7 @@
     "knex": "^2.0.0",
     "mysql": "^2.18.1",
     "socket.io": "^4.1.3",
-    "sqlite3": "^5.0.6"
+    "sqlite3": "^5.0.6",
+    "faker": "^5.5.3"
   }
 }

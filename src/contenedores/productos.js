@@ -34,4 +34,4 @@ class ProductosApi {
     }
 }
 
-module.exports = ProductosApi;
+export default ProductosApi;

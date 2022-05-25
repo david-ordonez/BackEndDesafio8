@@ -1,5 +1,5 @@
-const fs = require('fs');
-const fm = require('../util/filemanager');
+import fs from 'fs';
+import fm from '../util/filemanager';
 
 class MensajesApi {
     constructor(fileName) {
@@ -34,4 +34,4 @@ class MensajesApi {
     }
 }
 
-module.exports = MensajesApi;
+export default MensajesApi;

@@ -1,8 +1,9 @@
-const express = require('express');
-const { Server: IOServer } = require('socket.io');
-const { Server: HttpServer } = require('http');
-const { config } = require('./config/config')
-const ContenedorSQL = require('./contenedores/sql');
+import express from 'express';
+import { Server as IOServer } from 'socket.io';
+import { Server as HttpServer } from 'http'
+import config from './config/config.js';
+import ContenedorSQL from './contenedores/sql.js';
+import ProductosRouter  from './router/productos.js';
 
 
 
@@ -18,6 +19,7 @@ const mensajesApi = new ContenedorSQL(config.mariaDb, 'mensajes')
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('../public'));
+app.use('/api/productos-test', new ProductosRouter());
 
 const server = httpServer.listen(PORT, () => {
     console.log(`Servidor http escuchando en el puerto ${PORT}`);

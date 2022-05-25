@@ -1,4 +1,4 @@
-const knex = require('knex');
+import knex from 'knex';
 
 class Sql {
 
@@ -37,4 +37,4 @@ class Sql {
     }
 }
 
-module.exports = Sql;
+export default Sql;
