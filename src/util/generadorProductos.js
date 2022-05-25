@@ -5,7 +5,7 @@ function generarProductos() {
     return {
         nombre: faker.commerce.product(),
         precio: faker.commerce.price(),
-        foto: faker.image.imageUrl()
+        thumbnail: faker.image.imageUrl()
     }
 }
 

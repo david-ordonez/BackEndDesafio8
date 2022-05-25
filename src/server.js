@@ -31,6 +31,10 @@ app.get('/', (req, res) => {
     res.sendFile('index.html', { root: __dirname });
 });
 
+app.get('/productos-test',(req,res) => {
+    res.sendFile('productos-test.html', { root: __dirname });
+});
+
 io.on('connection',async (socket) => {
     console.log('cliente conectado');
     const productos = await productosApi.listarAll();

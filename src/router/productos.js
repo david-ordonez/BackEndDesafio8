@@ -7,7 +7,7 @@ class ProductosRouter extends express.Router {
 
         const apiProductos = new ApiProductosMock();
         
-        this.get('/api/productos-test', async (req, res, next) => {
+        this.get('/', async (req, res, next) => {
             try {
                 await apiProductos.popular();
                 res.json(await apiProductos.listarAll());
