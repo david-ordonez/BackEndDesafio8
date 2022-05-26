@@ -1,5 +1,5 @@
 import fs from 'fs';
-import fm from '../util/filemanager';
+import fm from '../util/filemanager.js';
 
 class MensajesApi {
     constructor(fileName) {

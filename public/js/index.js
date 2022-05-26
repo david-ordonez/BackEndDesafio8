@@ -38,12 +38,21 @@ const formPublicarMensaje = document.getElementById('formPublicarMensaje')
 formPublicarMensaje.addEventListener('submit', e => {
     e.preventDefault();
     const fecha = new Date();
-    const nuevoMensaje = {
-        author: inputUsername.value,
+    const nuevoMensaje = {        
+        author: {
+            email: inputUsername.value,
+            nombre: document.getElementById('firstname').value,
+            apellido: document.getElementById('lastname').value,
+            edad: document.getElementById('age').value,
+            alias: document.getElementById('alias').value,
+            avatar: document.getElementById('avatar').value,            
+            fecha: `${fecha.toLocaleDateString('es-MX')} ${fecha.toLocaleTimeString('es-MX')}`
+        },
         text: inputMensaje.value,
-        fecha: `${fecha.toLocaleDateString('es-MX')} ${fecha.toLocaleTimeString('es-MX')}`
     };
     socket.emit('nuevoMensaje', nuevoMensaje);
+    formPublicarMensaje.reset();
+    inputMensaje.focus();
     return false;
 })
 

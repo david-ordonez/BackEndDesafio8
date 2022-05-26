@@ -4,6 +4,7 @@ import { Server as HttpServer } from 'http'
 import config from './config/config.js';
 import ContenedorSQL from './contenedores/sql.js';
 import ProductosRouter  from './router/productos.js';
+import MensajesApi from './contenedores/mensajes.js';
 
 
 
@@ -13,7 +14,7 @@ const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 
 const productosApi = new ContenedorSQL(config.sqlite, 'productos')
-const mensajesApi = new ContenedorSQL(config.mariaDb, 'mensajes')
+const mensajesApi = new MensajesApi('./DB/mensajes.json')
 
 
 app.use(express.json());
@@ -38,7 +39,7 @@ app.get('/productos-test',(req,res) => {
 io.on('connection',async (socket) => {
     console.log('cliente conectado');
     const productos = await productosApi.listarAll();
-    console.log(`respuesta => ${productos}`)
+    
     socket.emit('listaProductos',productos);
     socket.on('nuevoProducto',async nuevoProducto => {
         await productosApi.guardar(nuevoProducto);
