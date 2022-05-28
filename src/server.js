@@ -70,7 +70,7 @@ io.on('connection',async (socket) => {
         await mensajesApi.guardar(nuevoMensaje);
         const listaMensajes = await mensajesApi.listarAll();
         const tamanio = JSON.stringify(listaMensajes).length;
-        const normalizedData = normalize({id:'mensajes', mensajes: originalData }, postsSchema);
+        const normalizedData = normalize({id:'mensajes', mensajes: listaMensajes }, postsSchema);
         const tamanioNormalized = JSON.stringify(normalizedData).length;
         const porc = (tamanioNormalized * 100) / tamanio;
         const porcentaje = porc.toFixed(2);

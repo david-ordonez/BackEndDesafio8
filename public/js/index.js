@@ -9,7 +9,7 @@ formAgregarProducto.addEventListener('submit', e => {
         thumbnail: document.getElementById('thumbnail').value
     };
     socket.emit('nuevoProducto', nuevoProducto);
-    return false;    
+    return false;
 })
 
 socket.on('listaProductos', async listaProductos => {
@@ -17,15 +17,15 @@ socket.on('listaProductos', async listaProductos => {
     document.getElementById('listaProductos').innerHTML = html;
 });
 
-async function renderListaProductos(productos){
+async function renderListaProductos(productos) {
     return fetch('templates/listaProductos.hbs')
-    .then(respuesta => respuesta.text())
-    .then(plantilla => {
-        const productosExists = productos.length > 0; 
-        const template = Handlebars.compile(plantilla);
-        const html = template({ productos, productosExists })
-        return html
-    });
+        .then(respuesta => respuesta.text())
+        .then(plantilla => {
+            const productosExists = productos.length > 0;
+            const template = Handlebars.compile(plantilla);
+            const html = template({ productos, productosExists })
+            return html
+        });
 }
 
 //*********************************************************************/
@@ -34,11 +34,20 @@ const inputUsername = document.getElementById('inputUsername')
 const inputMensaje = document.getElementById('inputMensaje')
 const btnEnviar = document.getElementById('btnEnviar')
 
+const authorSchema = new normalizr.schema.Entity('author', {}, { idAttribute: 'email' });
+const mensajeSchema = new normalizr.schema.Entity('post', {
+    author: authorSchema
+}, { idAttribute: 'id' });
+
+const postsSchema = new normalizr.schema.Entity('posts', {
+    mensajes: [mensajeSchema]
+}, { idAttribute: 'id' });
+
 const formPublicarMensaje = document.getElementById('formPublicarMensaje')
 formPublicarMensaje.addEventListener('submit', e => {
     e.preventDefault();
     const fecha = new Date();
-    const nuevoMensaje = {        
+    const nuevoMensaje = {
         author: {
             email: inputUsername.value,
             nombre: document.getElementById('firstname').value,
@@ -57,24 +66,25 @@ formPublicarMensaje.addEventListener('submit', e => {
 })
 
 inputUsername.addEventListener('change', e => {
-        inputMensaje.disabled = !inputUsername.checkValidity();
-        btnEnviar.disabled = !inputUsername.checkValidity();
+    inputMensaje.disabled = !inputUsername.checkValidity();
+    btnEnviar.disabled = !inputUsername.checkValidity();
 });
 
 socket.on('listaMensajes', async listaMensajes => {
     console.log(`objeto mensajes => ${JSON.stringify(listaMensajes)}`);
     document.getElementById('compresion-info').innerText = `${listaMensajes.porcentaje} %`;
-    const html = await renderListaMensajes(listaMensajes.normalizedData);
+    const denormalizedData = normalizr.denormalize(listaMensajes.normalizedData?.result, postsSchema, listaMensajes.normalizedData?.entities);
+    const html = await renderListaMensajes(denormalizedData.mensajess);
     document.getElementById('listaMensajes').innerHTML = html;
 });
 
-async function renderListaMensajes(mensajes){
+async function renderListaMensajes(mensajes) {
     console.log(mensajes);
     return fetch('templates/listaMensajes.hbs')
-    .then(respuesta => respuesta.text())
-    .then(plantilla => {
-        const template = Handlebars.compile(plantilla);
-        const html = template({ mensajes })
-        return html
-    });
+        .then(respuesta => respuesta.text())
+        .then(plantilla => {
+            const template = Handlebars.compile(plantilla);
+            const html = template({ mensajes })
+            return html
+        });
 }
