@@ -70,16 +70,18 @@ inputUsername.addEventListener('change', e => {
     btnEnviar.disabled = !inputUsername.checkValidity();
 });
 
-socket.on('listaMensajes', async listaMensajes => {
-    console.log(`objeto mensajes => ${JSON.stringify(listaMensajes)}`);
-    document.getElementById('compresion-info').innerText = `${listaMensajes.porcentaje} %`;
+socket.on('listaMensajes', async listaMensajes => {    
     const denormalizedData = normalizr.denormalize(listaMensajes.normalizedData?.result, postsSchema, listaMensajes.normalizedData?.entities);
-    const html = await renderListaMensajes(denormalizedData.mensajess);
-    document.getElementById('listaMensajes').innerHTML = html;
+    console.log('desnormalizado =>' + JSON.stringify(denormalizedData));
+    if(denormalizedData){
+        const html = await renderListaMensajes(denormalizedData.mensajes);
+        document.getElementById('listaMensajes').innerHTML = html;
+        document.getElementById('compresion-info').innerText = listaMensajes.porcentaje !== 0 ? `(Compresion: ${listaMensajes.porcentaje} %)`: '';
+    }
 });
 
 async function renderListaMensajes(mensajes) {
-    console.log(mensajes);
+    console.log('render => ' + mensajes);
     return fetch('templates/listaMensajes.hbs')
         .then(respuesta => respuesta.text())
         .then(plantilla => {

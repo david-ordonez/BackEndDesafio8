@@ -13,7 +13,6 @@ const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 const normalize = normalizr.normalize;
-const denormalize = normalizr.denormalize;
 const schema = normalizr.schema;
 
 const productosApi = new ContenedorSQL(config.sqlite, 'productos')
@@ -58,8 +57,8 @@ app.get('/productos-test',(req,res) => {
 io.on('connection',async (socket) => {
     console.log('cliente conectado');
     const productos = await productosApi.listarAll();
-    
     socket.emit('listaProductos',productos);
+
     socket.on('nuevoProducto',async nuevoProducto => {
         await productosApi.guardar(nuevoProducto);
         io.sockets.emit('listaProductos', productosApi.listarAll());
@@ -68,12 +67,21 @@ io.on('connection',async (socket) => {
     socket.emit('listaMensajes',mensajesApi.listarAll());
     socket.on('nuevoMensaje', async nuevoMensaje => {
         await mensajesApi.guardar(nuevoMensaje);
-        const listaMensajes = await mensajesApi.listarAll();
-        const tamanio = JSON.stringify(listaMensajes).length;
-        const normalizedData = normalize({id:'mensajes', mensajes: listaMensajes }, postsSchema);
-        const tamanioNormalized = JSON.stringify(normalizedData).length;
-        const porc = (tamanioNormalized * 100) / tamanio;
-        const porcentaje = porc.toFixed(2);
+
+        const listaMensajes = await mensajesApi.listarAll();  
+        const normalizedData = listaMensajes.length !== 0 ? normalize({id:'mensajes', mensajes: listaMensajes }, postsSchema) : {};
+        const porcentaje = calculaPorcentaje(listaMensajes, normalizedData) 
+
         io.sockets.emit('listaMensajes',{ normalizedData, porcentaje } );
     });
 });
+
+function calculaPorcentaje(originalData, normalizedData){
+    if(originalData.length == 0 || Object.keys(normalizedData).length === 0) return 0;
+
+    const tamanio = JSON.stringify(originalData).length;
+    const tamanioNormalized = JSON.stringify(normalizedData).length;
+    const porc = (tamanioNormalized * 100) / tamanio;
+
+    return porc.toFixed(2);
+}

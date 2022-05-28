@@ -1,5 +1,5 @@
 <section class="jumbotron">
   {{#each mensajes}}
-    <div class="messageHour"><strong class="text-primary">{{this.author}}</strong>[{{this.fecha}}]:<em class="messageText">{{this.text}}</em></div>
+    <div class="messageHour"><strong class="text-primary">{{this.author.email}}</strong>[{{this.fecha}}]:<em class="messageText">{{this.text}}</em><img width="50" src="{{this.author.avatar}}"></img></div>
   {{/each}}
 </section>
