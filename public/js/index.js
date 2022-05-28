@@ -45,10 +45,10 @@ formPublicarMensaje.addEventListener('submit', e => {
             apellido: document.getElementById('lastname').value,
             edad: document.getElementById('age').value,
             alias: document.getElementById('alias').value,
-            avatar: document.getElementById('avatar').value,            
-            fecha: `${fecha.toLocaleDateString('es-MX')} ${fecha.toLocaleTimeString('es-MX')}`
+            avatar: document.getElementById('avatar').value
         },
         text: inputMensaje.value,
+        fecha: `${fecha.toLocaleDateString('es-MX')} ${fecha.toLocaleTimeString('es-MX')}`
     };
     socket.emit('nuevoMensaje', nuevoMensaje);
     formPublicarMensaje.reset();
@@ -62,7 +62,9 @@ inputUsername.addEventListener('change', e => {
 });
 
 socket.on('listaMensajes', async listaMensajes => {
-    const html = await renderListaMensajes(listaMensajes);
+    console.log(`objeto mensajes => ${JSON.stringify(listaMensajes)}`);
+    document.getElementById('compresion-info').innerText = `${listaMensajes.porcentaje} %`;
+    const html = await renderListaMensajes(listaMensajes.normalizedData);
     document.getElementById('listaMensajes').innerHTML = html;
 });
 

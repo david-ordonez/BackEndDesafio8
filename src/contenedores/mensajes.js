@@ -17,8 +17,14 @@ class MensajesApi {
 
     async guardar(nuevoMensaje) {
         try {
+            let newId;
             const mensajes = await fm.readFile(this._fileName);
-            mensajes.push(nuevoMensaje);            
+            if(mensajes.length == 0){
+                newId = 1
+            } else{
+                newId = mensajes[mensajes.length - 1].id + 1
+            }
+            mensajes.push({ ...nuevoMensaje, id: newId});            
             await fm.saveFile(this._fileName,JSON.stringify(mensajes,null,2));
         } catch (error) {
             console.log(error);
