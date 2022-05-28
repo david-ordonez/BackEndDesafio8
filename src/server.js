@@ -28,13 +28,14 @@ app.use('/api/productos-test', new ProductosRouter());
 
 /*-----------------NORMALIZACION DE OBJETOS------------------*/
 
-const authorSchema = new schema.Entity('author');
-const mensajeSchema = new schema.Entity('mensaje');
+const authorSchema = new schema.Entity('author', { }, { idAttribute:'email' });
+const mensajeSchema = new schema.Entity('post', { 
+  author: authorSchema 
+}, { idAttribute: 'id' });
 
-const mensajes = new schema.Entity('mensajes',{
-    author: authorSchema,
+const postsSchema = new schema.Entity('posts',{
     mensajes: [mensajeSchema]
-});
+}, { idAttribute: 'id' });
 
 
 
@@ -69,9 +70,7 @@ io.on('connection',async (socket) => {
         await mensajesApi.guardar(nuevoMensaje);
         const listaMensajes = await mensajesApi.listarAll();
         const tamanio = JSON.stringify(listaMensajes).length;
-        const normalizedData = normalize(listaMensajes, mensajes);
-        console.log('---- normalizado -----')
-        console.log(util.inspect(normalizedData, false, 12, true));
+        const normalizedData = normalize({id:'mensajes', mensajes: originalData }, postsSchema);
         const tamanioNormalized = JSON.stringify(normalizedData).length;
         const porc = (tamanioNormalized * 100) / tamanio;
         const porcentaje = porc.toFixed(2);
